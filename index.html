@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch the Video</title>
+  <meta name="description" content="Watch the video.">
+  <meta property="og:title" content="Watch the Video">
+  <meta property="og:type" content="video.other">
+  <meta property="og:image" content="poster.jpg">
+  <style>
+    :root { --bg: #0b0b10; --card: #15151d; --accent: #9b5cff; --text: #f2f2f5; --muted: #9a9aa8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top, #22163a 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 32px 16px;
+    }
+    h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 800; letter-spacing: -0.02em; text-align: center; }
+    .sub { color: var(--muted); margin-top: 6px; text-align: center; }
+    .player {
+      margin-top: 24px;
+      width: min(420px, 100%);
+      aspect-ratio: 454 / 720;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 0 0 1px #2a2a36, 0 20px 60px rgba(155, 92, 255, 0.25);
+    }
+    .player video { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      background: var(--card); color: var(--text); border: 1px solid #2a2a36;
+      padding: 10px 18px; border-radius: 999px; font-size: 0.95rem; cursor: pointer;
+      text-decoration: none; transition: border-color .15s, background .15s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    footer { margin-top: auto; padding-top: 32px; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Watch the Video</h1>
+  <p class="sub">Hit play below</p>
+
+  <div class="player">
+    <video id="vid" src="video.mp4" poster="poster.jpg" controls playsinline preload="metadata"></video>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="share">Share</button>
+    <a class="btn" href="video.mp4" download>Download</a>
+  </div>
+
+  <footer>&copy; <span id="yr"></span></footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    const shareBtn = document.getElementById('share');
+    shareBtn.addEventListener('click', async () => {
+      const url = location.href;
+      try {
+        if (navigator.share) { await navigator.share({ title: document.title, url }); return; }
+        await navigator.clipboard.writeText(url);
+        shareBtn.textContent = 'Link copied!';
+        setTimeout(() => (shareBtn.textContent = 'Share'), 2000);
+      } catch (e) { /* user cancelled */ }
+    });
+  </script>
+</body>
+</html>
